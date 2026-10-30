@@ -66,7 +66,7 @@ export default function Welcome() {
           {user && <Link to="/" className="btn btn-ghost !min-h-[44px] !px-3">Back to the app</Link>}
         </header>
 
-        <main className="grid flex-1 items-center gap-8 py-6 lg:grid-cols-2 lg:gap-12">
+        <main className="grid flex-1 grid-cols-1 items-start gap-6 py-4 lg:grid-cols-2 lg:gap-10 lg:py-6">
           <section>
             <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-xl bg-teal-tint"><Logo className="h-12 w-12" /></div>
             <h1 className="mb-3 text-headline-xl-mobile md:text-headline-xl">Your thoughts stay yours.</h1>
