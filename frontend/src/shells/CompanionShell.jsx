@@ -18,23 +18,23 @@ export default function CompanionShell() {
     <div className="print-reset flex h-dvh flex-col overflow-hidden bg-surface">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-[200] focus:rounded-md focus:bg-white focus:px-4 focus:py-2">Skip to content</a>
       <header className="no-print z-40 shrink-0 bg-surface/90 shadow-[0_1px_8px_rgba(0,0,0,0.04)] backdrop-blur-md pt-[env(safe-area-inset-top)]">
-        <div className="mx-auto flex h-16 max-w-[960px] items-center justify-between gap-3 px-margin-mobile md:h-20 md:px-margin">
-          <NavLink to="/" className="flex items-center gap-2 rounded-lg" aria-label="NeuroShield home">
+        <div className="mx-auto flex h-16 max-w-[960px] items-center justify-between gap-2 lg:max-w-[1180px] px-margin-mobile md:h-20 md:px-margin">
+          <NavLink to="/" className="flex shrink-0 items-center gap-2 rounded-lg" aria-label="NeuroShield home">
             <Logo />
             <span className="font-headline text-headline-sm tracking-tight text-primary">NeuroShield</span>
           </NavLink>
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
             {TABS.map((t) => (
               <NavLink key={t.to} to={t.to} end={t.end}
-                className={({ isActive }) => `whitespace-nowrap rounded-xl px-4 py-2.5 text-label-lg transition-colors ${isActive ? 'bg-primary-container text-on-primary shadow-sm' : 'text-on-surface hover:bg-surface-container-low'}`}>
+                className={({ isActive }) => `whitespace-nowrap rounded-xl px-3 py-2.5 text-label-lg xl:px-4 transition-colors ${isActive ? 'bg-primary-container text-on-primary shadow-sm' : 'text-on-surface hover:bg-surface-container-low'}`}>
                 {t.label}
               </NavLink>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <NavLink to="/lab" title="Time-Travel Lab, analysis runs, evaluation and clinician report"
               className="hidden min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-xl px-3 text-label-md text-on-surface-variant hover:bg-surface-container-low md:inline-flex">
-              <Icon name="stethoscope" size={20} /> Clinician console
+              <Icon name="stethoscope" size={20} /> <span className="hidden xl:inline">Clinician console</span>
             </NavLink>
             <PrivacyPill className="hidden xl:inline-flex" />
             <UserSwitcher />
