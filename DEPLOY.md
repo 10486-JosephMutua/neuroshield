@@ -1,19 +1,62 @@
-# Deploy NeuroShield on Hugging Face Spaces (free)
+# Deploy NeuroShield to Render (free)
 
-1. Create a Space at huggingface.co/new-space. Choose **Docker** as the SDK, **Blank** template, **Public**.
-2. In the Space, open **Settings > Variables and secrets** and add a **secret** named `NEBIUS_API_KEY` with your Token Factory key.
-3. Push the project to the Space repo (copy the project files into it). The Space README must start with:
+This configuration targets Render's free web-service instance (512 MB RAM). It
+keeps the React UI, Flask API, AI pipeline and all four MCP tool groups.
 
-   ```
-   ---
-   title: NeuroShield
-   sdk: docker
-   app_port: 7860
-   ---
-   ```
+## What changed for the free instance
 
-   Keep your GitHub README as the main one; the Space can use its own copy with this header.
-4. Wait for the build (about 3-5 minutes). Open the Space URL. On the welcome page, pick a demo person. The demo data is created automatically.
-5. Free Spaces sleep when idle and the database resets on restart. That is fine, because the demo people are regenerated on the welcome page.
+- The four FastMCP servers retain their own loopback ports and original tools, but
+  now share one asyncio event loop in one Python process. The old launcher created
+  four additional Python interpreters.
+- Gunicorn runs exactly one WSGI worker. Do not increase `--workers`: each worker
+  would start another set of MCP servers and duplicate the AI libraries in RAM.
+- Gunicorn uses four request threads; model-backed analysis concurrency defaults to one.
+- MCP HTTP transport is stateless because tool state is stored in SQLite.
+- React is built in a Node build stage; Node is not installed in the runtime image.
+- The always-on watcher is disabled on the free instance.
 
-Alternatives: Render (Docker web service, set `NEUROSHIELD_FLASK_PORT` to the port Render gives you) or Railway.
+These changes reduce overhead; they do not guarantee a fixed memory figure. Check
+actual Render memory during startup and while an AI analysis is running. If it still
+exceeds 512 MB, further profiling or a larger instance will be necessary.
+
+## Deploy using the Render Blueprint
+
+1. Push the contents of this project folder to a GitHub repository.
+2. In Render, choose **New + → Blueprint** and connect that repository.
+3. Render reads `render.yaml`; select the free plan.
+4. In the service's Environment page, add `NEBIUS_API_KEY` as a secret.
+5. Deploy and wait for the build to finish.
+6. Open `https://<your-service-name>.onrender.com/`.
+7. Check `https://<your-service-name>.onrender.com/api/health`. Expect `status: ok`
+   and all four entries in `mcp_reachable` to be `true`.
+
+## Required secret
+
+- `NEBIUS_API_KEY`: your Nebius Token Factory API key.
+
+Never commit `.env` or put the API key in GitHub.
+
+## Local production-like test
+
+```bash
+pip install -r requirements-dev.txt
+cd frontend
+npm ci
+npm run build
+cd ..
+python run_all.py
+```
+
+For a Gunicorn test on Linux/macOS/Render:
+
+```bash
+PORT=10000 gunicorn run_all:app --bind 0.0.0.0:$PORT --workers 1 \
+  --worker-class gthread --threads 4 --timeout 180
+```
+
+## Free-tier limitations
+
+Render free web services sleep after inactivity and use ephemeral storage. The
+SQLite database at `/tmp/neuroshield.db` can reset after a restart or redeploy. Demo
+personas can be seeded again from the app. Do not use this free deployment for real
+patient data or as a persistent clinical service.

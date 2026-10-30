@@ -82,7 +82,7 @@ python scripts/verify_token_factory.py   # confirms model IDs and tool calling
 
 cd frontend && npm install && npm run build && cd ..
 python scripts/seed_demo_data.py         # four fictional demo people
-python run_all.py                        # MCP servers + Flask + web app on http://127.0.0.1:5000
+python run_all.py                        # four MCP servers + Flask + web app on http://127.0.0.1:5000
 ```
 
 For hot reload while working on the UI, keep `python run_all.py` running and start `npm run dev` in `frontend/` (http://localhost:5173, which proxies `/api` to Flask).
@@ -192,9 +192,9 @@ Every process also writes logs to `logs/<component>.log`.
 
 - Build the web app first (`npm run build`). `python run_all.py` then starts the four MCP servers and serves the app and API from one Flask process.
 - Set `NEUROSHIELD_FLASK_HOST=0.0.0.0` and `NEUROSHIELD_FLASK_PORT` to the port your platform expects.
-- Keep `data/` on persistent storage, because it holds the SQLite database.
+- Render free services have ephemeral storage. The Blueprint uses `/tmp/neuroshield.db`; demo data can be reseeded after a restart, but this is not persistent storage.
 - The app has no authentication, CORS is open, and `/api/demo/seed` and `DELETE /api/users/<id>` are public. That is fine for a demo with fictional data. Put it behind authentication or a reverse proxy before it holds real people's data.
-- `run_all.py` uses Flask's built-in server. Use a production WSGI server if you expect real traffic.
+- `run_all.py` shares one asyncio event loop across all four FastMCP servers. On Render, Gunicorn runs one WSGI worker (`--workers 1`) so the MCP services and AI libraries are not duplicated. Do not increase the worker count on the 512 MB instance.
 - Here the database sits on the server. In a real product it would live on the person's device, so only numbers would reach the server and the models.
 
 ## Limitations

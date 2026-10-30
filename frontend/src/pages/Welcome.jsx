@@ -66,8 +66,8 @@ export default function Welcome() {
           {user && <Link to="/" className="btn btn-ghost !min-h-[44px] !px-3">Back to the app</Link>}
         </header>
 
-        <main className="grid flex-1 items-start gap-8 py-6 lg:grid-cols-2 lg:gap-12">
-          <section className="lg:sticky lg:top-8">
+        <main className="grid flex-1 items-center gap-8 py-6 lg:grid-cols-2 lg:gap-12">
+          <section>
             <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-xl bg-teal-tint"><Logo className="h-12 w-12" /></div>
             <h1 className="mb-3 text-headline-xl-mobile md:text-headline-xl">Your thoughts stay yours.</h1>
             <p className="mb-8 text-body-lg text-on-surface-variant">
@@ -110,7 +110,7 @@ export default function Welcome() {
               </button>
               {personas.length > 0 && (
                 <div className="mt-2 w-full text-left">
-                  <p className="mb-2 text-label-md text-on-surface-variant">Testers: pick a fictional person to see a different situation</p>
+                  <p className="mb-2 text-label-md text-on-surface-variant">Judges and testers: pick a fictional person to see a different situation</p>
                   <ul className="space-y-2">
                     {personas.map((p) => (
                       <li key={p.user_id}>

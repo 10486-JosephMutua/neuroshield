@@ -13,7 +13,7 @@ export function UserSwitcher({ className = '' }) {
   const mine = users.filter((u) => !u.is_synthetic)
   const demo = users.filter((u) => u.is_synthetic)
   return (
-    <label className={`relative inline-flex min-h-[48px] max-w-[190px] shrink-0 items-center gap-2 rounded-full bg-surface-container-low pl-2 pr-8 ${className}`}>
+    <label className={`relative inline-flex min-h-[48px] max-w-[190px] items-center gap-2 rounded-full bg-surface-container-low pl-2 pr-8 ${className}`}>
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary"><Icon name="person" size={18} /></span>
       <span className="sr-only">Switch person</span>
       <select value={user?.user_id ?? ''} onChange={onChange}

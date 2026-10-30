@@ -1,69 +1,120 @@
-"""Start everything for local use or a single-machine demo:
+"""Run the Flask app and all four MCP servers in one Python process.
 
-    python run_all.py
-
-Launches the four MCP servers, waits until they accept connections, then runs the Flask
-app, which also serves the built React app from frontend/dist. Ctrl+C stops everything."""
+Production entry point: gunicorn run_all:app --workers 1 --worker-class gthread --threads 4
+Each FastMCP server keeps its own HTTP port/tool namespace, but shares one asyncio
+ event loop in a background thread instead of spawning four extra interpreters.
+"""
 from __future__ import annotations
 
-import signal
+import asyncio
 import socket
-import subprocess
-import sys
+import threading
 import time
+from typing import Any
 
 from backend.config import get_settings
 from backend.logging_setup import configure_logging, get_logger
 
-MODULES = ("backend.mcp_servers.biomarker_server", "backend.mcp_servers.memory_server",
-           "backend.mcp_servers.report_server", "backend.mcp_servers.evidence_server")
+configure_logging("run_all")
+log = get_logger("run_all")
+_SERVER_THREAD: threading.Thread | None = None
+_SERVER_ERROR: list[BaseException] = []
+_START_LOCK = threading.Lock()
+_STARTED = False
 
 
-def _wait_for_port(host: str, port: int, timeout: float = 40.0) -> bool:
-    deadline = time.time() + timeout
-    while time.time() < deadline:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(0.5)
-            if sock.connect_ex((host, port)) == 0:
-                return True
-        time.sleep(0.25)
-    return False
-
-
-def main() -> int:
-    configure_logging("run_all")
-    log = get_logger("run_all")
+def _load_servers() -> list[tuple[str, Any, int]]:
+    """Import the four existing MCP apps without starting separate processes."""
+    from backend.mcp_servers.biomarker_server import mcp as biomarkers
+    from backend.mcp_servers.memory_server import mcp as memory
+    from backend.mcp_servers.report_server import mcp as report
+    from backend.mcp_servers.evidence_server import mcp as evidence
     settings = get_settings()
-    children = [subprocess.Popen([sys.executable, "-m", m]) for m in MODULES]
+    return [
+        ("biomarkers", biomarkers, settings.biomarker_port),
+        ("memory", memory, settings.memory_port),
+        ("report", report, settings.report_port),
+        ("evidence", evidence, settings.evidence_port),
+    ]
 
-    def stop(*_):
-        log.info("Stopping...")
-        for child in children:
-            child.terminate()
-        for child in children:
-            try:
-                child.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                child.kill()
-        sys.exit(0)
 
-    signal.signal(signal.SIGINT, stop)
-    signal.signal(signal.SIGTERM, stop)
+async def _serve_all_mcp() -> None:
+    """Serve all four FastMCP apps concurrently on one asyncio event loop."""
+    settings = get_settings()
+    servers = _load_servers()
+    log.info("Starting %d MCP servers in one Python process", len(servers))
+    await asyncio.gather(*(
+        server.run_async(
+            transport="http",
+            host=settings.mcp_host,
+            port=port,
+            show_banner=False,
+            stateless_http=True,
+        )
+        for _name, server, port in servers
+    ))
 
-    for name, port in settings.mcp_ports.items():
-        if not _wait_for_port(settings.mcp_host, port):
-            log.error("MCP server '%s' did not start on port %d", name, port)
-            stop()
-    log.info("MCP servers are up. Starting the web app on http://%s:%d", settings.flask_host, settings.flask_port)
 
-    from backend.app import create_app  # imported late so logging is configured first
-
+def _mcp_thread_main() -> None:
     try:
-        create_app().run(host=settings.flask_host, port=settings.flask_port, debug=False, threaded=True)
-    finally:
-        stop()
-    return 0
+        asyncio.run(_serve_all_mcp())
+    except BaseException as exc:
+        _SERVER_ERROR.append(exc)
+        log.exception("MCP server event loop stopped unexpectedly")
+
+
+def _port_is_open(host: str, port: int) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=0.35):
+            return True
+    except OSError:
+        return False
+
+
+def start_mcp_servers(timeout: float = 45.0) -> None:
+    """Start the MCP event loop once and wait until all four ports accept TCP."""
+    global _SERVER_THREAD, _STARTED
+    with _START_LOCK:
+        if _STARTED:
+            return
+        settings = get_settings()
+        _SERVER_THREAD = threading.Thread(
+            target=_mcp_thread_main,
+            name="neuroshield-mcp-event-loop",
+            daemon=True,
+        )
+        _SERVER_THREAD.start()
+        pending = {
+            "biomarkers": settings.biomarker_port,
+            "memory": settings.memory_port,
+            "report": settings.report_port,
+            "evidence": settings.evidence_port,
+        }
+        deadline = time.monotonic() + timeout
+        while pending and time.monotonic() < deadline:
+            if _SERVER_ERROR:
+                raise RuntimeError("An MCP server failed during startup") from _SERVER_ERROR[0]
+            for name, port in list(pending.items()):
+                if _port_is_open(settings.mcp_host, port):
+                    log.info("MCP server %s is listening on %s:%s", name, settings.mcp_host, port)
+                    pending.pop(name)
+            if pending:
+                time.sleep(0.2)
+        if pending:
+            raise RuntimeError(
+                "MCP startup timed out; ports not ready: "
+                + ", ".join(f"{name}:{port}" for name, port in pending.items())
+            )
+        _STARTED = True
+
+
+# Gunicorn imports this module in its single worker. Start MCP before exposing WSGI.
+start_mcp_servers()
+
+from backend.app import create_app  # noqa: E402
+app = create_app()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    settings = get_settings()
+    app.run(host=settings.flask_host, port=settings.flask_port, debug=False, threaded=True)
