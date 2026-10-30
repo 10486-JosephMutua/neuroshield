@@ -1,0 +1,178 @@
+{
+  "generated_at": "2026-10-07T06:37:40+00:00",
+  "synthetic": true,
+  "parameters": {
+    "days": 90,
+    "decline_onset_day": 36,
+    "healthy_people": 60,
+    "people_per_decline_strength": 30,
+    "people_per_confounder": 30,
+    "flagged_signals": [
+      "motor_only_change",
+      "single_domain_drift",
+      "sustained_multi_domain_drift"
+    ],
+    "baseline_days": 28,
+    "thresholds": {
+      "shift_z": 1.5,
+      "cusum_k": 0.5,
+      "cusum_h": 5.0,
+      "sustained_min_age_days": 21
+    }
+  },
+  "healthy": {
+    "people": 60,
+    "checkpoint_days": [
+      50,
+      60,
+      70,
+      80,
+      90
+    ],
+    "people_ever_flagged": {
+      "count": 0,
+      "of": 60,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.0602
+      ]
+    },
+    "checkpoints_flagged": {
+      "count": 0,
+      "of": 300,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.0126
+      ]
+    }
+  },
+  "decline": [
+    {
+      "scale": 0.25,
+      "label": "Very subtle",
+      "people": 30,
+      "detected": {
+        "count": 6,
+        "of": 30,
+        "rate": 0.2,
+        "ci95": [
+          0.095,
+          0.3731
+        ]
+      },
+      "median_delay_days": 51.0,
+      "p90_delay_days": 54
+    },
+    {
+      "scale": 0.5,
+      "label": "Subtle",
+      "people": 30,
+      "detected": {
+        "count": 30,
+        "of": 30,
+        "rate": 1.0,
+        "ci95": [
+          0.8865,
+          1.0
+        ]
+      },
+      "median_delay_days": 42.0,
+      "p90_delay_days": 51
+    },
+    {
+      "scale": 0.75,
+      "label": "Moderate",
+      "people": 30,
+      "detected": {
+        "count": 30,
+        "of": 30,
+        "rate": 1.0,
+        "ci95": [
+          0.8865,
+          1.0
+        ]
+      },
+      "median_delay_days": 33.0,
+      "p90_delay_days": 39
+    },
+    {
+      "scale": 1.0,
+      "label": "Demo strength",
+      "people": 30,
+      "detected": {
+        "count": 30,
+        "of": 30,
+        "rate": 1.0,
+        "ci95": [
+          0.8865,
+          1.0
+        ]
+      },
+      "median_delay_days": 30.0,
+      "p90_delay_days": 36
+    }
+  ],
+  "flu": {
+    "people": 30,
+    "mid_illness_day": 74,
+    "recovered_day": 90,
+    "mistaken_for_decline_during_illness": {
+      "count": 2,
+      "of": 30,
+      "rate": 0.0667,
+      "ci95": [
+        0.0185,
+        0.2132
+      ]
+    },
+    "recognised_as_acute_during_illness": {
+      "count": 10,
+      "of": 30,
+      "rate": 0.3333,
+      "ci95": [
+        0.1923,
+        0.5122
+      ]
+    },
+    "flagged_after_recovery": {
+      "count": 1,
+      "of": 30,
+      "rate": 0.0333,
+      "ci95": [
+        0.0059,
+        0.1667
+      ]
+    }
+  },
+  "keyboard": {
+    "people": 30,
+    "day": 90,
+    "recognised_as_mechanical_only": {
+      "count": 30,
+      "of": 30,
+      "rate": 1.0,
+      "ci95": [
+        0.8865,
+        1.0
+      ]
+    },
+    "mistaken_for_cognitive_change": {
+      "count": 0,
+      "of": 30,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.1135
+      ]
+    }
+  },
+  "caveats": [
+    "All people are simulated. The simulator and the thresholds were developed together, so these results are optimistic.",
+    "Real typing is messier than this simulation; real-world accuracy has not been measured.",
+    "Detection is of a sustained change from a person's own baseline, not of any disease.",
+    "Confidence intervals are 95% Wilson intervals and reflect only the number of simulated people."
+  ],
+  "seconds": 15.8
+}

@@ -1,0 +1,62 @@
+/** Design tokens from the "Calm Companion" design system. */
+export default {
+  content: ['./index.html', './src/**/*.{js,jsx}'],
+  theme: {
+    extend: {
+      colors: {
+        surface: '#f7f9ff', 'surface-dim': '#d1dbe8', 'surface-bright': '#f7f9ff',
+        'surface-container-lowest': '#ffffff', 'surface-container-low': '#edf4ff', 'surface-container': '#e4effd',
+        'surface-container-high': '#dfe9f7', 'surface-container-highest': '#d9e3f1',
+        'on-surface': '#121d26', 'on-surface-variant': '#3e4947', 'inverse-surface': '#27313c',
+        'inverse-on-surface': '#e8f2ff', outline: '#6e7977', 'outline-variant': '#bdc9c6', 'surface-tint': '#006a63',
+        primary: '#005c55', 'on-primary': '#ffffff', 'primary-container': '#0f766e', 'on-primary-container': '#a3faef',
+        'inverse-primary': '#80d5cb', secondary: '#4e45d5', 'on-secondary': '#ffffff', 'secondary-container': '#6860ef',
+        'on-secondary-container': '#fffbff', tertiary: '#2d5951', 'on-tertiary': '#ffffff',
+        'tertiary-container': '#467169', 'on-tertiary-container': '#c5f3ea', error: '#ba1a1a', 'on-error': '#ffffff',
+        'error-container': '#ffdad6', 'on-error-container': '#93000a', 'primary-fixed': '#9cf2e8',
+        'primary-fixed-dim': '#80d5cb', 'on-primary-fixed': '#00201d', 'on-primary-fixed-variant': '#00504a',
+        'secondary-fixed': '#e3dfff', 'secondary-fixed-dim': '#c3c0ff', 'on-secondary-fixed': '#100069',
+        'on-secondary-fixed-variant': '#372abf', 'tertiary-fixed': '#bdece2', 'tertiary-fixed-dim': '#a2d0c6',
+        'on-tertiary-fixed': '#00201c', 'on-tertiary-fixed-variant': '#224e47', background: '#f7f9ff',
+        'on-background': '#121d26', 'surface-variant': '#d9e3f1',
+        // Additional tokens
+        border: '#E4E7EB', accent: '#4338CA', teal: '#0F766E', 'teal-tint': '#CCFBF1',
+        'steady-fg': '#15803D', 'steady-bg': '#DCFCE7', 'slight-fg': '#B45309', 'slight-bg': '#FEF3C7',
+        'worth-fg': '#5B21B6', 'worth-bg': '#EDE9FE', danger: '#B42318', 'danger-bg': '#FEF2F2',
+      },
+      borderRadius: { DEFAULT: '0.5rem', md: '0.75rem', lg: '1rem', xl: '1.5rem', full: '9999px' },
+      spacing: {
+        gutter: '1.5rem', 'gutter-console': '1rem', margin: '2rem', 'margin-mobile': '1rem',
+        'space-xs': '0.25rem', 'space-sm': '0.5rem', 'space-md': '1rem', 'space-lg': '1.5rem',
+        'space-xl': '2rem', 'space-2xl': '3rem',
+      },
+      fontFamily: {
+        headline: ['"Newsreader Variable"', 'Georgia', 'serif'],
+        body: ['"Atkinson Hyperlegible Next"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono Variable"', 'ui-monospace', 'monospace'],
+      },
+      fontSize: {
+        'headline-xl': ['40px', { lineHeight: '52px', fontWeight: '600' }],
+        'headline-xl-mobile': ['32px', { lineHeight: '42px', fontWeight: '600' }],
+        'headline-lg': ['32px', { lineHeight: '44px', fontWeight: '600' }],
+        'headline-lg-mobile': ['26px', { lineHeight: '36px', fontWeight: '600' }],
+        'headline-md': ['24px', { lineHeight: '34px', fontWeight: '600' }],
+        'headline-sm': ['20px', { lineHeight: '30px', fontWeight: '600' }],
+        'body-xl': ['20px', { lineHeight: '32px', fontWeight: '400' }],
+        'body-lg': ['18px', { lineHeight: '29px', fontWeight: '400' }],
+        'body-md': ['16px', { lineHeight: '26px', fontWeight: '400' }],
+        'body-sm': ['14px', { lineHeight: '22px', fontWeight: '400' }],
+        'label-lg': ['16px', { lineHeight: '24px', fontWeight: '600' }],
+        'label-md': ['14px', { lineHeight: '20px', fontWeight: '600' }],
+        'data-mono': ['14px', { lineHeight: '20px', fontWeight: '500' }],
+      },
+      boxShadow: {
+        card: '0 2px 8px rgba(31,41,51,0.04)',
+        'card-hover': '0 6px 16px rgba(31,41,51,0.06)',
+      },
+      height: { dvh: '100dvh' },
+      minHeight: { dvh: '100dvh' },
+    },
+  },
+  plugins: [],
+}
