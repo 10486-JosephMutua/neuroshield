@@ -110,7 +110,7 @@ export default function Welcome() {
               </button>
               {personas.length > 0 && (
                 <div className="mt-2 w-full text-left">
-                  <p className="mb-2 text-label-md text-on-surface-variant">Judges and testers: pick a fictional person to see a different situation</p>
+                  <p className="mb-2 text-label-md text-on-surface-variant">Testers: pick a fictional person to see a different situation</p>
                   <ul className="space-y-2">
                     {personas.map((p) => (
                       <li key={p.user_id}>

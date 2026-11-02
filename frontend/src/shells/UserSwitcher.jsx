@@ -13,7 +13,7 @@ export function UserSwitcher({ className = '' }) {
   const mine = users.filter((u) => !u.is_synthetic)
   const demo = users.filter((u) => u.is_synthetic)
   return (
-    <label className={`relative inline-flex min-h-[48px] max-w-[190px] shrink-0 items-center gap-2 rounded-full bg-surface-container-low pl-2 pr-8 ${className}`}>
+    <label className={`relative inline-flex min-h-[44px] max-w-[150px] shrink-0 items-center gap-1.5 rounded-full bg-surface-container-low pl-1.5 pr-7 sm:min-h-[48px] sm:max-w-[190px] sm:gap-2 sm:pl-2 sm:pr-8 ${className}`}>
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary"><Icon name="person" size={18} /></span>
       <span className="sr-only">Switch person</span>
       <select value={user?.user_id ?? ''} onChange={onChange}
@@ -22,7 +22,7 @@ export function UserSwitcher({ className = '' }) {
         {demo.length > 0 && <optgroup label="Demo people">{demo.map((u) => <option key={u.user_id} value={u.user_id}>{u.display_name}</option>)}</optgroup>}
         <option value="__new__">＋ Add or demo a person…</option>
       </select>
-      <Icon name="expand_more" size={18} className="pointer-events-none absolute right-2 text-outline" />
+      <Icon name="expand_more" size={18} className="pointer-events-none absolute right-1.5 text-outline sm:right-2" />
     </label>
   )
 }

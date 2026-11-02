@@ -167,19 +167,21 @@ export default function Lab() {
   return (
     <div className="print-reset flex h-full flex-col">
       <div className="shrink-0 border-b border-border bg-surface px-4 py-3 md:px-6">
-        <div className="mb-3 flex gap-2 overflow-x-auto pb-1" role="radiogroup" aria-label="Choose a person">
+        {/* Person picker: swipeable, snapping, edge-to-edge strip with no visible scrollbar on phones/tablets;
+            equal-width cards on large screens. */}
+        <div className="-mx-4 mb-3 flex snap-x snap-mandatory items-stretch gap-2 overflow-x-auto scroll-px-4 px-4 py-1 [scrollbar-width:none] md:-mx-6 md:scroll-px-6 md:px-6 lg:snap-none [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Choose a person">
           {users.filter((u) => u.is_synthetic).map((u) => {
             const selected = u.user_id === user.user_id
             const p = personas.data?.personas.find((x) => x.user_id === u.user_id)
             return (
               <button key={u.user_id} type="button" role="radio" aria-checked={selected} onClick={() => setUserId(u.user_id)}
-                className={`min-h-[56px] w-[220px] shrink-0 rounded-lg border-2 p-3 text-left transition-colors lg:w-auto lg:flex-1 ${selected ? 'border-primary-container bg-teal-tint/50' : 'border-border bg-white hover:bg-surface-container-low'}`}>
+                className={`min-h-[56px] w-[220px] shrink-0 snap-start rounded-lg border-2 p-3 text-left transition-colors lg:w-auto lg:flex-1 ${selected ? 'border-primary-container bg-teal-tint/50' : 'border-border bg-white hover:bg-surface-container-low'}`}>
                 <div className="flex items-center gap-2 font-headline text-headline-sm">{u.display_name.replace(' (synthetic)', '')}{selected && <Icon name="check_circle" size={18} className="text-primary" />}</div>
                 <div className="line-clamp-2 text-body-sm text-on-surface-variant">{p?.description}</div>
               </button>
             )
           })}
-          {users.some((u) => u.is_synthetic) && <button type="button" onClick={watchNow} disabled={scanning} className="btn btn-outline shrink-0 !min-h-[56px]" title="Re-screen everyone now, the same step the background watch runs on a schedule">{scanning ? <Spinner className="h-4 w-4" /> : <Icon name="notifications_active" size={20} />} Run the watch now</button>}
+          {users.some((u) => u.is_synthetic) && <button type="button" onClick={watchNow} disabled={scanning} className="btn btn-outline shrink-0 snap-start self-stretch !min-h-[56px] !rounded-lg !border-2 !px-5 whitespace-nowrap" title="Re-screen everyone now, the same step the background watch runs on a schedule">{scanning ? <Spinner className="h-4 w-4" /> : <Icon name="notifications_active" size={20} />} Run the watch now</button>}
           {!users.some((u) => u.is_synthetic) && <button type="button" className="btn btn-primary" onClick={seed} disabled={seeding}>{seeding ? <Spinner className="h-4 w-4" /> : <Icon name="science" size={20} />} Create the demo people</button>}
         </div>
         {!user.is_synthetic && <p className="mb-2 rounded-md bg-slight-bg p-2 text-body-sm text-slight-fg">You are viewing a real person's data. Pick a demo person above to use the replay.</p>}

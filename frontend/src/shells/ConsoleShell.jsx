@@ -69,18 +69,22 @@ export default function ConsoleShell() {
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="no-print z-30 flex shrink-0 items-center gap-2 border-b border-border bg-surface/90 px-3 pt-[env(safe-area-inset-top)] backdrop-blur-md md:px-5">
-          <div className="flex h-14 w-full items-center gap-2">
-            <button type="button" onClick={() => setOpen(true)} className="flex h-12 w-12 items-center justify-center rounded-full hover:bg-surface-container-low lg:hidden" aria-label="Open menu"><Icon name="menu" /></button>
-            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-              {here && <span className="truncate text-label-lg text-primary" aria-live="polite">{here.label}</span>}
+        <header className="no-print z-30 shrink-0 border-b border-border bg-surface/90 pt-[env(safe-area-inset-top)] backdrop-blur-md">
+          <div className="flex h-14 w-full items-center gap-2 px-2 md:px-5">
+            <button type="button" onClick={() => setOpen(true)} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-container-low lg:hidden" aria-label="Open menu"><Icon name="menu" /></button>
+
+            {/* One row on every screen size: page title, then a data-type badge that is icon-only on phones. */}
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              {here && <span className="min-w-0 truncate text-label-lg text-primary" aria-live="polite">{here.label}</span>}
               {user?.is_synthetic
-                ? <Badge className="bg-slight-bg text-slight-fg"><Icon name="science" size={14} /> Synthetic data</Badge>
-                : <Badge className="bg-teal-tint text-teal"><Icon name="person" size={14} /> Real person's data</Badge>}
+                ? <Badge className="h-6 shrink-0 justify-center bg-slight-bg text-slight-fg max-sm:w-6 max-sm:!px-0 sm:h-auto"><Icon name="science" size={16} /> <span className="sr-only sm:not-sr-only">Synthetic data</span></Badge>
+                : <Badge className="h-6 shrink-0 justify-center bg-teal-tint text-teal max-sm:w-6 max-sm:!px-0 sm:h-auto"><Icon name="person" size={16} /> <span className="sr-only sm:not-sr-only">Real person's data</span></Badge>}
             </div>
-            <Link to="/" className="flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-xl px-3 text-label-md text-on-surface-variant hover:bg-surface-container-low" aria-label="Back to the companion app">
-              <Icon name="arrow_back" size={20} /> <span className="hidden sm:inline">Companion app</span>
-            </Link>
+
+            {/* On phones the drawer already has "Companion app", so the back link only appears from md up. */}
+            {/* <Link to="/" className="hidden min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl px-3 text-label-md text-on-surface-variant hover:bg-surface-container-low md:flex" aria-label="Back to the companion app">
+              <Icon name="arrow_back" size={20} /> Companion app
+            </Link> */}
             <UserSwitcher />
           </div>
         </header>
