@@ -6,7 +6,6 @@ import { PipelineGraph } from '../components/PipelineGraph'
 import { Badge, EmptyState, ErrorNotice, Icon, Skeleton, StatusChip } from '../components/ui'
 import { metricValue, monthDay, num, pct, seconds, usd } from '../lib/format'
 import { RECOMMENDATIONS, RUN_NODES, signalInfo, toneStatus } from '../lib/signals'
-import { SplitPanes } from '../shells/layout'
 import { useAsync } from '../state/useAsync'
 import { useUser } from '../state/UserContext'
 
@@ -129,5 +128,14 @@ export default function Run() {
     </div>
   )
 
-  return <SplitPanes left={left} right={right} leftClass="lg:col-span-8" rightClass="lg:col-span-4" />
+  // One page scroll on phones and tablets (the final decision comes first there); only on large
+  // screens do the two panes scroll on their own.
+  return (
+    <div className="print-reset scroll-y h-full lg:overflow-hidden">
+      <div className="grid gap-gutter-console p-4 md:p-6 lg:h-full lg:grid-cols-12">
+        <div className="min-w-0 lg:col-span-8 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">{left}</div>
+        <div className="order-first min-w-0 lg:order-none lg:col-span-4 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">{right}</div>
+      </div>
+    </div>
+  )
 }
