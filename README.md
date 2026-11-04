@@ -208,24 +208,3 @@ Every process also writes logs to `logs/<component>.log`.
 ## Licence
 
 MIT. See `LICENSE`.
-
-## Hackathon submission notes
-
-**Track:** Personal AI.
-
-**NVIDIA models used:** Nemotron 3 Ultra (analyst, deep reasoning) and Nemotron 3 Nano (confounder review, verification, JSON repair, daily check-in).
-
-**Where Nebius Token Factory helped:** both models are served through one OpenAI-compatible endpoint, so the same `ChatOpenAI` client drives the Ultra and Nano roles. Per-call latency, tokens and estimated cost are recorded for every run (see the Analysis Run page). Ultra is used once per analysis and Nano handles the frequent cheap calls, which keeps credits low.
-
-**Other Nebius tools:** none beyond Token Factory. The app is packaged as a single container (`Dockerfile`) and can be moved to Nebius Serverless Endpoints.
-
-**Existing work:** this project was built during the submission period.
-
-### Feedback on Nebius Token Factory and NVIDIA tools
-
-- Token Factory: _add your own notes here (setup, latency, rate limits, docs)._
-- Nemotron models: _add your own notes here (tool calling, JSON reliability, reasoning quality)._
-
-## Deploy for free (Hugging Face Spaces)
-
-See `DEPLOY.md`.
